@@ -12,11 +12,11 @@ class DetailsEscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  Colors.grey[300],
+      backgroundColor: Colors.grey[300],
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            backgroundColor:  Colors.grey[200],
+            backgroundColor: Colors.grey[200],
             centerTitle: true,
             title: Text(
               overflow: TextOverflow.ellipsis,
@@ -36,24 +36,20 @@ class DetailsEscreen extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Hero(
-                          tag: 'nasa_image_${nasaData.title}',
-                          child: CachedNetworkImage(
-                            imageUrl: nasaData.url,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            fit: BoxFit.cover,
-                          ))
-                      .animate()
-                      .fade(duration: 300.ms)
-                      .then(delay: 50.ms)
-                      .slide(),
+                      tag: 'nasa_image_${nasaData.title}',
+                      child: CachedNetworkImage(
+                        imageUrl: nasaData.url,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                        fit: BoxFit.cover,
+                      )),
                   const SizedBox(height: 18.0),
                   Text(
                     nasaData.title,
@@ -61,19 +57,20 @@ class DetailsEscreen extends StatelessWidget {
                         fontSize: 24.0, fontWeight: FontWeight.bold),
                   )
                       .animate()
-                      .fadeIn(duration: 500.ms)
+                      .fadeIn(duration: 300.ms)
                       .then(delay: 200.ms)
                       .slideX(),
                   const SizedBox(height: 8.0),
                   Text(
                     nasaData.formatDate(DateTime.parse(nasaData.date)),
                     style: const TextStyle(fontSize: 16.0),
-                  ).animate().then(delay: 300.ms).slideX(),
+                  ).animate().then(delay: 400.ms).slideX(),
                   const SizedBox(height: 8.0),
                   Text(
+                    textAlign: TextAlign.justify,
                     nasaData.explanation,
                     style: const TextStyle(fontSize: 16.0),
-                  ).animate().then(delay: 250.ms).slideX(),
+                  ).animate().then(delay: 550.ms).slideX(),
                 ],
               ),
             ),

@@ -14,8 +14,8 @@ class NasaReposotory with DataStorage implements INasaRepository {
   NasaReposotory({required this.client});
   @override
   Future<List<NasaData>> getNasaData() async {
+    final dataStorage = readDataStorage();
     try {
-      final dataStorage = readDataStorage();
       final response = await client.get(
           url: 'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=20');
 
@@ -36,6 +36,9 @@ class NasaReposotory with DataStorage implements INasaRepository {
         throw Exception('Não foi possível carregar imagens da NASA');
       }
     } catch (e) {
+      if (dataStorage != null && dataStorage.isNotEmpty) {
+        return dataStorage;
+      }
       debugPrint(e.toString());
       throw Exception('Não foi possível carregar imagens da NASA');
     }

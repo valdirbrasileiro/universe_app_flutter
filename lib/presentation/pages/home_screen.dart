@@ -63,97 +63,67 @@ class _HomeScreenState extends State<HomeScreen> {
               ));
             } else if (state.data is NasaDataLoadedState) {
               nasaDataList = state.data?.nasaData ?? [];
-              if (_nasaDataBloc.nasaDataComplete.value.isNotEmpty) {
-                return RefreshIndicator(
-                  onRefresh: () => _onRefresh(),
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      SliverAppBar(
-                        shadowColor: Colors.grey,
-                        actions: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_rounded,
-                              color: Colors.deepPurpleAccent,
+              return NestedScrollView(
+                  headerSliverBuilder: (context, _) => [
+                        SliverAppBar(
+                          backgroundColor: Colors.grey[200],
+                          shadowColor: Colors.black,
+                          actions: [
+                            IconButton(
+                              icon: Icon(
+                                (_nasaDataBloc.nasaDataComplete.value
+                                            .isNotEmpty &&
+                                        nasaDataList.isNotEmpty)
+                                    ? Icons.delete_rounded
+                                    : Icons.search,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                              onPressed: () {
+                                (_nasaDataBloc.nasaDataComplete.value
+                                            .isNotEmpty &&
+                                        nasaDataList.isNotEmpty)
+                                    ? _nasaDataBloc.inputNasa
+                                        .add(RecoveryNasaEvent())
+                                    : _showDatePickerBottomSheet(context);
+                              },
                             ),
-                            onPressed: () {
-                              _nasaDataBloc.inputNasa.add(RecoveryNasaEvent());
-                            },
+                          ],
+                          floating: true,
+                          snap: true,
+                          toolbarHeight: 50.0,
+                          flexibleSpace: const FlexibleSpaceBar(
+                            centerTitle: true,
+                            title: Text(
+                              'Universe',
+                              style: TextStyle(color: Colors.deepPurpleAccent),
+                            ),
                           ),
-                        ],
-                        floating: true,
-                        snap: true,
-                        toolbarHeight: 50.0,
-                        flexibleSpace: const FlexibleSpaceBar(
-                          centerTitle: true,
-                          title: Text(
-                            'Universe',
-                            style: TextStyle(color: Colors.deepPurpleAccent),
-                          ),
-                        ),
-                        automaticallyImplyLeading: false,
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  AnimatedTextList(
-                                    phrases: [
-                                      'Ops, parece que não encontramos suas imagens',
-                                      'Tente refazer a busca'
-                                    ],
-                                  )
+                          automaticallyImplyLeading: false,
+                        )
+                      ],
+                  body: (_nasaDataBloc.nasaDataComplete.value.isNotEmpty &&
+                          nasaDataList.isEmpty)
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 100,
+                              ),
+                              AnimatedTextList(
+                                phrases: [
+                                  'Ops, parece que não encontramos suas imagens',
+                                  'Tente refazer a busca'
                                 ],
-                              ),
-                            );
-                          },
-                          childCount: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return NestedScrollView(
-                    headerSliverBuilder: (context, _) => [
-                          SliverAppBar(
-                            backgroundColor: Colors.grey[200],
-                            shadowColor: Colors.black,
-                            actions: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.search,
-                                  color: Colors.deepPurpleAccent,
-                                ),
-                                onPressed: () {
-                                  _showDatePickerBottomSheet(context);
-                                },
-                              ),
+                              )
                             ],
-                            floating: true,
-                            snap: true,
-                            toolbarHeight: 50.0,
-                            flexibleSpace: const FlexibleSpaceBar(
-                              centerTitle: true,
-                              title: Text(
-                                'Universe',
-                                style:
-                                    TextStyle(color: Colors.deepPurpleAccent),
-                              ),
-                            ),
-                            automaticallyImplyLeading: false,
-                          )
-                        ],
-                    body: RefreshIndicator(
-                      onRefresh: () => _onRefresh(),
-                      child: NasaList(nasaDataList: nasaDataList),
-                    ));
-              }
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: () => _onRefresh(),
+                          child: NasaList(nasaDataList: nasaDataList),
+                        ));
             }
             if (state is NasaDataErrorState) {
               navigateToNamed('/generic_error');
